@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     let finalBoardId = board_id;
     if (!finalBoardId) {
        const boardRes = await pool.query(`SELECT id FROM task_boards ORDER BY id ASC LIMIT 1`);
-       if(boardRes.rowCount > 0) finalBoardId = boardRes.rows[0].id;
+       if((boardRes.rowCount ?? 0) > 0) finalBoardId = boardRes.rows[0].id;
     }
 
     const { rows } = await pool.query(
