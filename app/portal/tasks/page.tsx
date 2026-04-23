@@ -25,6 +25,7 @@ interface Task {
   due_date?: string;
   created_at?: string;
   creator_name?: string;
+  tags?: string[];
 }
 
 const COLUMNS: { id: TaskStatus; title: string; color: string }[] = [
