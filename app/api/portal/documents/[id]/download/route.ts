@@ -21,6 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   if (isNaN(docId)) return new NextResponse('Invalid ID', { status: 400 });
 
   const pool = getDb();
+  const permissions = user.permissions || [];
   const roles = user.roles || [];
 
   try {
@@ -31,7 +32,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const doc = docRes.rows[0];
     
     // Check Quyền Truy Cập
-    if (!roles.includes('users') && !roles.includes('docs_manager')) {
+    if (!permissions.includes('users') && !permissions.includes('docs_manager')) {
        let hasAccess = false;
        for (const role of roles) {
          if (doc.allowed_roles.includes(role)) {

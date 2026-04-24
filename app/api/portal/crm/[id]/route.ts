@@ -11,7 +11,7 @@ async function checkAdminStatus() {
   if (!token) return false;
   try {
     const user = verifyToken(token);
-    return user.roles?.includes('crm') || user.roles?.includes('users');
+    return user.permissions?.includes('crm') || user.permissions?.includes('users');
   } catch(e) { return false; }
 }
 

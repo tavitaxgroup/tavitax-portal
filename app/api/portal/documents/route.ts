@@ -16,7 +16,7 @@ export async function GET() {
   const user = await getUserFromSession();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
-  const roles = user.roles || [];
+  const permissions = user.permissions || [];
   const pool = getDb();
 
   try {
@@ -24,15 +24,15 @@ export async function GET() {
     let params: any[] = [];
 
     // Người dùng là Admin Portal hoặc Admin Kho Tài Liệu được xem tất cả
-    if (roles.includes('users') || roles.includes('docs_manager')) {
+    if (permissions.includes('users') || permissions.includes('docs_manager')) {
       query = 'SELECT id, title, file_name, file_size, file_type, category, allowed_roles, uploaded_by, created_at FROM documents ORDER BY created_at DESC';
     } else {
       // Chỉ cho phép xem nếu mảng roles của user giao nhau với allowed_roles của document
-      if (roles.length === 0) {
+      if (!user.roles || user.roles.length === 0) {
         return NextResponse.json([]);
       }
       query = 'SELECT id, title, file_name, file_size, file_type, category, allowed_roles, uploaded_by, created_at FROM documents WHERE allowed_roles ?| $1::text[] ORDER BY created_at DESC';
-      params = [roles];
+      params = [user.roles || []];
     }
 
     const { rows } = await pool.query(query, params);
@@ -48,8 +48,8 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
   // Chỉ cho phép upload nếu có quyền docs_manager hoặc users
-  const roles = user.roles || [];
-  if (!roles.includes('docs_manager') && !roles.includes('users')) {
+  const permissions = user.permissions || [];
+  if (!permissions.includes('docs_manager') && !permissions.includes('users')) {
     return NextResponse.json({ error: 'Bạn không có quyền upload tài liệu' }, { status: 403 });
   }
 

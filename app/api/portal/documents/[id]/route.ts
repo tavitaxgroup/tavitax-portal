@@ -18,8 +18,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
   // Chỉ Admin hệ thống hoặc Quyền quản lý file mới được phép xóa file
-  const roles = user.roles || [];
-  if (!roles.includes('users') && !roles.includes('docs_manager')) {
+  const permissions = user.permissions || [];
+  if (!permissions.includes('users') && !permissions.includes('docs_manager')) {
     return NextResponse.json({ error: 'Không có quyền xóa' }, { status: 403 });
   }
 
