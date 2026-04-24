@@ -10,14 +10,14 @@ export function AdminSidebar({ user }: { user: any }) {
   const permissions = user.permissions || [];
 
   const navItems = [
-    { name: "Bảng điều khiển", href: "/portal", icon: <LayoutDashboard size={20} />, always: true },
-    { name: "Lịch biểu Cơ quan", href: "/portal/calendar", icon: <Calendar size={20} />, always: true },
-    { name: "Quản trị Đầu việc", href: "/portal/tasks", icon: <ClipboardList size={20} />, always: true },
-    { name: "Mini CRM (Leads)", href: "/portal/crm", icon: <Users size={20} />, role: "crm" },
-    { name: "Tạo Báo Giá", href: "/portal/quote", icon: <FileText size={20} />, role: "quote" },
-    { name: "Quản lý Bài Viết", href: "/portal/news/manage", icon: <Newspaper size={20} />, role: "news" },
-    { name: "Kho Tài Liệu", href: "/portal/documents", icon: <FolderArchive size={20} />, role: "docs" },
-    { name: "Tài khoản nội bộ", href: "/portal/users", icon: <ShieldAlert size={20} />, role: "users" },
+    { name: "Bảng điều khiển", href: "/", icon: <LayoutDashboard size={20} />, always: true },
+    { name: "Lịch biểu Cơ quan", href: "/calendar", icon: <Calendar size={20} />, always: true },
+    { name: "Quản trị Đầu việc", href: "/tasks", icon: <ClipboardList size={20} />, always: true },
+    { name: "Mini CRM (Leads)", href: "/crm", icon: <Users size={20} />, role: "crm" },
+    { name: "Tạo Báo Giá", href: "/quote", icon: <FileText size={20} />, role: "quote" },
+    { name: "Quản lý Bài Viết", href: "/news/manage", icon: <Newspaper size={20} />, role: "news" },
+    { name: "Kho Tài Liệu", href: "/documents", icon: <FolderArchive size={20} />, role: "docs" },
+    { name: "Tài khoản nội bộ", href: "/users", icon: <ShieldAlert size={20} />, role: "users" },
   ];
 
   return (
@@ -35,8 +35,10 @@ export function AdminSidebar({ user }: { user: any }) {
             if (!item.always && item.role && !permissions.includes(item.role)) {
                return null;
             }
-            // Simple active check
-            const isActive = item.href === '/portal' ? pathname?.endsWith('/portal') : pathname?.includes(item.href);
+            // Active check: exact match cho '/', startsWith cho các route khác
+            const isActive = item.href === '/'
+              ? pathname === '/' || pathname === ''
+              : pathname === item.href || pathname?.startsWith(item.href + '/');
             
             return (
               <Link key={item.href} href={item.href}>

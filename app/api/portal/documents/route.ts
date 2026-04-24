@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
 async function getUserFromSession() {
@@ -7,7 +8,7 @@ async function getUserFromSession() {
   const token = cookieStore.get('tavitax-auth')?.value;
   if (!token) return null;
   try {
-    return JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    return verifyToken(token);
   } catch(e) { return null; }
 }
 

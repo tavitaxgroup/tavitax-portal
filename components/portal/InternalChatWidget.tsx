@@ -234,7 +234,7 @@ export function InternalChatWidget({ isOpen, onClose, currentUserId }: { isOpen:
                            {c.last_time && <span className="text-[10px] text-slate-400 shrink-0">{new Date(c.last_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>}
                          </div>
                          <p className={`text-xs truncate ${c.unread > 0 ? "font-bold text-primary-600 dark:text-primary-400" : "text-slate-500 dark:text-slate-400"}`}>
-                           {c.last_message_sender_id == currentUserId ? "Bạn: " : ""}{c.last_message_content || (c.attachment_url ? "[Tệp đính kèm]" : c.job_title) || "Chưa có tin nhắn"}
+                           {c.last_message_sender_id == currentUserId ? "Bạn: " : ""}{c.last_message_content ? c.last_message_content.replace(/<[^>]*>?/gm, '') : (c.last_message_attachment_url ? (c.last_message_attachment_type === 'image' ? '[Hình ảnh]' : '[Tệp đính kèm]') : c.job_title) || "Chưa có tin nhắn"}
                          </p>
                        </div>
                        {c.unread > 0 && (

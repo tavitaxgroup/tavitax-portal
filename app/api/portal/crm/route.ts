@@ -1,15 +1,16 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getDb } from '@/lib/db';
+import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = getDb();
 
 async function checkAdminStatus() {
   const cookieStore = await cookies();
   const token = cookieStore.get('tavitax-auth')?.value;
   if (!token) return false;
   try {
-    const user = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const user = verifyToken(token);
     return user.roles?.includes('crm') || user.roles?.includes('users'); // allow admin or crm
   } catch(e) { return false; }
 }

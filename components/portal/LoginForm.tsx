@@ -33,7 +33,7 @@ export function LoginForm() {
       });
 
       if (res.ok) {
-        window.location.href = '/portal'; // Redirect to dashboard
+        window.location.href = '/'; // Redirect to dashboard
       } else {
         const data = await res.json();
         setError(data.error || "Tài khoản hoặc mật khẩu không đúng.");

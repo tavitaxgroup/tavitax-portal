@@ -72,9 +72,9 @@ ${textToSummarize}
     // Parse the output into an array of strings
     const points = output
       .split('\n')
-      .map(line => line.trim())
-      .filter(line => line.startsWith('-') || line.startsWith('*'))
-      .map(line => line.replace(/^[-*]\s*/, ''));
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.startsWith('-') || line.startsWith('*'))
+      .map((line: string) => line.replace(/^[-*]\s*/, ''));
 
     return points.length > 0 ? points : [];
   } catch (error) {

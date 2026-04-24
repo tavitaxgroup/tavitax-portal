@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getDb } from '@/lib/db';
+import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = getDb();
 
 export async function GET(req: Request) {
   try {
@@ -10,7 +11,7 @@ export async function GET(req: Request) {
     const token = cookieStore.get('tavitax-auth')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const userToken = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const userToken = verifyToken(token);
     const myId = userToken.id;
 
     // Load available users with the most recent message between them and 'me'
@@ -34,7 +35,9 @@ export async function GET(req: Request) {
         lm.last_time,
         uc.unread,
         m.content as last_message_content,
-        m.sender_id as last_message_sender_id
+        m.sender_id as last_message_sender_id,
+        m.attachment_url as last_message_attachment_url,
+        m.attachment_type as last_message_attachment_type
       FROM admin_users u
       LEFT JOIN LastMessages lm ON u.id = lm.contact_id
       LEFT JOIN unread_counts uc ON u.id = uc.contact_id

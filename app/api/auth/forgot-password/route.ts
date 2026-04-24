@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getDb } from '@/lib/db';
 import nodemailer from 'nodemailer';
 
 export async function POST(req: Request) {
@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const { email } = await req.json();
     if (!email) return NextResponse.json({ error: 'Email là bắt buộc' }, { status: 400 });
 
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    const pool = getDb();
     const { rows } = await pool.query("SELECT id, name FROM admin_users WHERE username = $1", [email]);
 
     if (rows.length === 0) {

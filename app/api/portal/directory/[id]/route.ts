@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getDb } from '@/lib/db';
+import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = getDb();
 
 export async function GET(req: Request, context: any) {
   try {
@@ -12,7 +13,7 @@ export async function GET(req: Request, context: any) {
     const token = cookieStore.get('tavitax-auth')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const userToken = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const userToken = verifyToken(token);
     
     // Resolve 'me' ID
     const targetId = id === 'me' ? userToken.id : parseInt(id, 10);
@@ -53,7 +54,7 @@ export async function POST(req: Request, context: any) {
     const token = cookieStore.get('tavitax-auth')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const userToken = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const userToken = verifyToken(token);
     const targetId = id === 'me' ? userToken.id : parseInt(id, 10);
 
     // Only allow updating own profile for now unless user is Admin

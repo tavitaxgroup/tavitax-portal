@@ -9,13 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/genai": "^1.50.1",
     "@vercel/postgres": "^0.10.0",
+    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "docxtemplater": "^3.68.5",
     "dotenv": "^17.4.2",
     "fast-xml-parser": "^5.7.1",
     "framer-motion": "^12.38.0",
     "googleapis": "^171.4.0",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.8.0",
     "next": "16.2.4",
     "nodemailer": "^8.0.5",
@@ -27,12 +30,16 @@
     "read-vietnamese-number": "^2.3.1",
     "recharts": "^3.8.1",
     "tailwind-merge": "^3.5.0",
-    "vn-num2words": "^1.0.4"
+    "vn-num2words": "^1.0.4",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.0",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

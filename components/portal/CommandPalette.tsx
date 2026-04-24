@@ -50,9 +50,9 @@ export function CommandPalette() {
   // Mock search Logic (co the ghep that sau)
   const results = [
     { type: 'Task', icon: PlusCircle, title: 'Tạo Task mới thật nhanh', action: handleCreateTask, badge: 'Phím tắt' },
-    { type: 'Nav', icon: LayoutDashboard, title: 'Mở Bảng Dữ Liệu', action: () => handleAction('/vi/portal') },
-    { type: 'Nav', icon: FileText, title: 'Bảng quản trị Kanban', action: () => handleAction('/vi/portal/tasks') },
-    { type: 'Nav', icon: Settings, title: 'Cài đặt hệ thống', action: () => handleAction('/vi/portal/settings') },
+    { type: 'Nav', icon: LayoutDashboard, title: 'Mở Bảng Dữ Liệu', action: () => handleAction('/') },
+    { type: 'Nav', icon: FileText, title: 'Bảng quản trị Kanban', action: () => handleAction('/tasks') },
+    { type: 'Nav', icon: Settings, title: 'Quản lý tài khoản', action: () => handleAction('/users') },
   ].filter(item => item.title.toLowerCase().includes(query.toLowerCase()) || query === "");
 
   return (
@@ -109,7 +109,7 @@ export function CommandPalette() {
       )}
 
       {/* Global Task Modal Modal */}
-      <TaskAddModal isOpen={isTaskModalOpen} onClose={() => setIsTaskModalOpen(false)} onSaved={() => { setIsTaskModalOpen(false); router.push('/vi/portal/tasks'); }} />
+      <TaskAddModal isOpen={isTaskModalOpen} onClose={() => setIsTaskModalOpen(false)} onSaved={() => { setIsTaskModalOpen(false); router.push('/tasks'); }} />
     </>
   );
 }

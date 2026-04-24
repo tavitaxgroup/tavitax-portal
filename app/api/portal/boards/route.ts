@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getDb } from '@/lib/db';
+import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = getDb();
 
 export async function GET() {
   try {
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
     const token = cookieStore.get('tavitax-auth')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const userToken = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const userToken = verifyToken(token);
     const body = await req.json();
     const { name, color } = body;
 

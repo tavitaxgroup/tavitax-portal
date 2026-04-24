@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { getDb } from '@/lib/db';
+import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = getDb();
 
 export async function GET(req: Request) {
   try {
@@ -51,7 +52,7 @@ export async function POST(req: Request) {
     const token = cookieStore.get('tavitax-auth')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const userToken = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const userToken = verifyToken(token);
     const myId = userToken.id;
 
     const body = await req.json();
@@ -85,7 +86,7 @@ export async function POST(req: Request) {
         await pool.query(
           `INSERT INTO chat_messages (sender_id, receiver_id, content, message_type) 
            VALUES ($1, $2, $3, $4)`,
-          [myId, assigneeId, `<div class="bg-primary-50 dark:bg-primary-900/30 p-3 rounded-lg border border-primary-200 dark:border-primary-800"><p class="font-bold text-primary-700 dark:text-primary-300">📋 Công việc Nhóm mới được giao</p><p class="text-sm mt-1">Sếp vừa giao cho nhóm công việc: <b>${title}</b>. Hãy kiểm tra bảng Kanban!</p></div>`, 'SYSTEM_NOTIFICATION']
+          [myId, assigneeId, `📋 <b>Công việc Nhóm mới được giao</b>\nSếp vừa giao cho nhóm công việc: <b>${title}</b>. Hãy kiểm tra bảng Kanban!`, 'SYSTEM_NOTIFICATION']
         );
       }
     }
@@ -103,7 +104,7 @@ export async function PUT(req: Request) {
     const token = cookieStore.get('tavitax-auth')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const userToken = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const userToken = verifyToken(token);
     const myId = userToken.id;
 
     const body = await req.json();

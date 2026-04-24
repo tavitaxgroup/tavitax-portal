@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { verifyToken } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
@@ -9,7 +10,7 @@ export async function POST(req: Request) {
     const token = cookieStore.get('tavitax-auth')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const userToken = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    const userToken = verifyToken(token);
 
     const formData = await req.formData();
     const file = formData.get('file') as File | null;

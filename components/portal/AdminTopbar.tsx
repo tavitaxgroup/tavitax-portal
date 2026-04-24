@@ -115,7 +115,7 @@ export function AdminTopbar({ user }: { user: any }) {
                <button 
                  key={emp.id}
                  onClick={() => {
-                   router.push(`/portal/directory/${emp.id}`);
+                   router.push(`/directory/${emp.id}`);
                    setSearchResults([]);
                    setSearchQuery("");
                  }}
@@ -219,7 +219,7 @@ export function AdminTopbar({ user }: { user: any }) {
 
                 {/* Primary Features */}
                 <div className="px-2">
-                  <button onClick={() => { setIsDropdownOpen(false); router.push("/portal/directory/me"); }} className="w-full text-left px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg transition-colors flex items-center gap-3">
+                  <button onClick={() => { setIsDropdownOpen(false); router.push("/directory/me"); }} className="w-full text-left px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg transition-colors flex items-center gap-3">
                     <UserIcon size={16} /> Thông tin cá nhân
                   </button>
                   <button onClick={() => { setIsDropdownOpen(false); alert("Đang phát triển trang Lịch sử cá nhân"); }} className="w-full text-left px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600 dark:hover:text-primary-400 rounded-lg transition-colors flex items-center gap-3">

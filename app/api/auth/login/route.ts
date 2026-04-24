@@ -1,22 +1,46 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { Pool } from 'pg';
+import { getDb } from '@/lib/db';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = getDb();
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-me';
 
 export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
     
-    // Find user in DB
+    // Find user in DB (chỉ tìm theo username, không so sánh password trong SQL nữa)
     const { rows } = await pool.query(
-      `SELECT id, username, password, name, roles FROM admin_users WHERE username = $1 AND password = $2`, 
-      [username, password]
+      `SELECT id, username, password, name, roles FROM admin_users WHERE username = $1`, 
+      [username]
     );
     
     const user = rows[0];
     
     if (!user) {
+      return NextResponse.json({ error: 'Tài khoản hoặc mật khẩu không đúng' }, { status: 401 });
+    }
+
+    // So sánh mật khẩu: hỗ trợ cả bcrypt hash và plain text (cho giai đoạn chuyển đổi)
+    const isHashed = user.password.startsWith('$2a$') || user.password.startsWith('$2b$');
+    let passwordMatch = false;
+    
+    if (isHashed) {
+      passwordMatch = await bcrypt.compare(password, user.password);
+    } else {
+      // Giai đoạn chuyển đổi: so sánh plain text rồi tự động hash luôn
+      passwordMatch = (password === user.password);
+      if (passwordMatch) {
+        // Auto-migrate: hash mật khẩu plain text thành bcrypt
+        const hashedPassword = await bcrypt.hash(password, 12);
+        await pool.query(`UPDATE admin_users SET password = $1 WHERE id = $2`, [hashedPassword, user.id]);
+        console.log(`[Auth] Auto-migrated password for user ${user.username}`);
+      }
+    }
+
+    if (!passwordMatch) {
       return NextResponse.json({ error: 'Tài khoản hoặc mật khẩu không đúng' }, { status: 401 });
     }
 
@@ -44,8 +68,8 @@ export async function POST(request: Request) {
     // Inject unified permissions
     userData.permissions = permissions;
     
-    // Create base64 encoded user info as token for simplicity
-    const token = Buffer.from(JSON.stringify(userData)).toString('base64');
+    // Tạo JWT token có chữ ký bảo mật (thay vì base64 thuần)
+    const token = jwt.sign(userData, JWT_SECRET, { expiresIn: 3600 });
     
     // Ensure we're setting it on the Next.js cookies manager
     try {
