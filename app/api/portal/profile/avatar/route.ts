@@ -50,6 +50,6 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error("Upload avatar error:", error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: `Lỗi máy chủ: ${error.message || 'Không xác định'}` }, { status: 500 });
   }
 }
