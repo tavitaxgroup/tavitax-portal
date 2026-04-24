@@ -104,8 +104,8 @@ export default function ProfilePage() {
     const file = e.target.files?.[0];
     if(!file) return;
 
-    if (file.size > 15 * 1024 * 1024) {
-      alert("Kích thước file quá lớn. Vui lòng chọn ảnh dưới 15MB.");
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Kích thước file quá lớn. Vui lòng chọn ảnh dưới 2MB.");
       return;
     }
 
