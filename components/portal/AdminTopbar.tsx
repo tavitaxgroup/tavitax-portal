@@ -20,6 +20,7 @@ export function AdminTopbar({ user }: { user: any }) {
   
   // Status Local State
   const [status, setStatus] = useState("ONLINE"); // ONLINE, BUSY, AWAY
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   // Search State
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,7 +33,10 @@ export function AdminTopbar({ user }: { user: any }) {
     // Fetch user status on mount
     fetch('/api/portal/profile/status')
       .then(res => res.json())
-      .then(data => { if (data.status) setStatus(data.status); })
+      .then(data => { 
+        if (data.status) setStatus(data.status); 
+        if (data.avatar_url) setAvatarUrl(data.avatar_url);
+      })
       .catch(e => console.error(e));
 
     // Poll Unread Messages
@@ -51,7 +55,19 @@ export function AdminTopbar({ user }: { user: any }) {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    
+    // Custom event to handle avatar update from ProfilePage
+    const handleAvatarUpdate = (e: any) => {
+      if (e.detail && e.detail.avatarUrl) {
+        setAvatarUrl(e.detail.avatarUrl);
+      }
+    };
+    window.addEventListener('avatarUpdated', handleAvatarUpdate);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener('avatarUpdated', handleAvatarUpdate);
+    };
   }, []);
 
   useEffect(() => {
@@ -163,9 +179,13 @@ export function AdminTopbar({ user }: { user: any }) {
                 {statusDisplay.text}
               </div>
             </div>
-            <div className="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center border-2 border-primary-50 dark:border-primary-800 relative">
-              <UserIcon size={18} className="text-primary-700 dark:text-primary-400" />
-              <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-slate-900 ${statusDisplay.color}`}></span>
+            <div className="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center border-2 border-primary-50 dark:border-primary-800 relative overflow-hidden">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <UserIcon size={18} className="text-primary-700 dark:text-primary-400" />
+              )}
+              <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-slate-900 ${statusDisplay.color} z-10`}></span>
             </div>
             <ChevronDown size={14} className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-colors" />
           </button>

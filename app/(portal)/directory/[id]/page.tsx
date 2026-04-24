@@ -122,6 +122,8 @@ export default function ProfilePage() {
       
       if (res.ok) {
         setProfile({ ...profile, avatar_url: data.avatar_url });
+        // Dispatch custom event to notify AdminTopbar
+        window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: { avatarUrl: data.avatar_url } }));
       } else {
         alert(data.error || "Lỗi tải ảnh lên.");
       }
