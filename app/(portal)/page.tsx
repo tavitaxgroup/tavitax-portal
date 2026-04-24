@@ -1,12 +1,11 @@
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "@/lib/auth";
 import { Bot, TrendingUp, Users, FileText, ArrowUpRight, Activity } from "lucide-react";
 import { AdminChatbot } from "@/components/portal/AdminChatbot";
 import { DashboardStats } from "@/components/portal/DashboardStats";
 import { ActivityFeed } from "@/components/portal/ActivityFeed";
 import { getDb } from "@/lib/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-me';
 
 export default async function AdminDashboardPage() {
   const cookieStore = await cookies();
@@ -14,11 +13,7 @@ export default async function AdminDashboardPage() {
 
   let user: any = null;
   if (token) {
-    try {
-      user = jwt.verify(token, JWT_SECRET);
-    } catch {
-      try { user = JSON.parse(Buffer.from(token, 'base64').toString('utf8')); } catch {}
-    }
+      try { user = verifyToken(token); } catch {}
   }
 
   if (!user) return null; // handled by layout

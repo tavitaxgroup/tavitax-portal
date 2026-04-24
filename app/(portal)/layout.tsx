@@ -1,24 +1,17 @@
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "@/lib/auth";
 import { LoginForm } from "@/components/portal/LoginForm";
 import { AdminTopbar } from "@/components/portal/AdminTopbar";
 import { AdminSidebar } from "@/components/portal/AdminSidebar";
 import { SessionKeepAlive } from "@/components/portal/SessionKeepAlive";
 import { ThemeProvider } from "@/components/portal/ThemeProvider";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-me';
-
 // Hàm giải mã token: hỗ trợ cả JWT mới lẫn base64 cũ (giai đoạn chuyển đổi)
 function decodeToken(token: string): any {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return verifyToken(token);
   } catch {
-    // Fallback: thử parse base64 cũ
-    try {
-      return JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
-    } catch {
-      return null;
-    }
+    return null;
   }
 }
 

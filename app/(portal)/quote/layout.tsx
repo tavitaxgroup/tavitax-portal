@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { ShieldAlert } from "lucide-react";
+import { verifyToken } from "@/lib/auth";
 
 export default async function QuoteGuardLayout({
   children,
@@ -13,7 +14,7 @@ export default async function QuoteGuardLayout({
   
   if (token) {
     try {
-      const user = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+      const user = verifyToken(token);
       if (user.permissions?.includes('quote')) {
         hasAccess = true;
       }
