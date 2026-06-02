@@ -135,67 +135,104 @@ export function LoginForm() {
 
         {/* LOGIN MODE */}
         {mode === "login" && (
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 block">Tên đăng nhập / Email</label>
-              <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <User size={20} />
-                </span>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all font-medium"
-                  placeholder="Nhập email tài khoản"
-                  required
+          <div className="space-y-6">
+            <button
+              type="button"
+              onClick={() => {
+                window.location.href = "/api/auth/google/login";
+              }}
+              className="w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-4 border border-slate-200 rounded-2xl flex justify-center items-center gap-3 transition-all shadow-sm hover:shadow-md active:scale-[0.98] cursor-pointer"
+            >
+              <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69a5.74 5.74 0 0 1-2.49 3.77v3.12h4.02c2.35-2.16 3.7-5.35 3.7-8.74z"
                 />
+                <path
+                  fill="#34A853"
+                  d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-4.02-3.12c-1.12.75-2.55 1.19-3.94 1.19-3.04 0-5.62-2.05-6.54-4.82H1.31v3.23A11.996 11.996 0 0 0 12 24z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.46 14.34a7.21 7.21 0 0 1 0-4.68V6.43H1.31a11.997 11.997 0 0 0 0 11.14l4.15-3.23z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.43-3.43C17.96 1.19 15.24 0 12 0 7.31 0 3.23 2.68 1.31 6.43l4.15 3.23c.92-2.77 3.5-4.91 6.54-4.91z"
+                />
+              </svg>
+              <span className="text-slate-700 dark:text-slate-800 font-semibold text-sm">Đăng nhập bằng Google</span>
+            </button>
+
+            <div className="relative flex items-center justify-center my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-100"></div>
               </div>
+              <span className="relative bg-white px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Hoặc sử dụng tài khoản tĩnh</span>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 block">Mật khẩu</label>
-              <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Lock size={20} />
-                </span>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all font-medium"
-                  placeholder="Nhập mật khẩu"
-                  required
-                />
-                <button
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 block">Tên đăng nhập / Email</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    <User size={18} />
+                  </span>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all font-medium text-sm text-slate-800"
+                    placeholder="Nhập email tài khoản"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-600 block">Mật khẩu</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    <Lock size={18} />
+                  </span>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all font-medium text-sm text-slate-800"
+                    placeholder="Nhập mật khẩu"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <button 
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  onClick={() => { setMode("forgot"); setError(""); setSuccessMsg(""); }}
+                  className="text-primary-600 hover:text-primary-800 text-xs font-bold transition"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  Quên mật khẩu?
                 </button>
               </div>
-            </div>
 
-            <div className="flex justify-end">
-              <button 
-                type="button"
-                onClick={() => { setMode("forgot"); setError(""); setSuccessMsg(""); }}
-                className="text-primary-600 hover:text-primary-800 text-sm font-semibold transition"
+              <button
+                type="submit"
+                disabled={loading || !username || !password}
+                className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3.5 px-4 rounded-xl flex justify-center items-center gap-2 transition-all disabled:opacity-50 active:scale-[0.98] cursor-pointer"
               >
-                Quên mật khẩu?
+                {loading ? <Loader2 className="animate-spin" size={20} /> : <LogIn size={20} />}
+                Đăng nhập
               </button>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading || !username || !password}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 transition-all disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : <LogIn size={20} />}
-              Đăng nhập
-            </button>
-          </form>
+            </form>
+          </div>
         )}
 
         {/* FORGOT PASSWORD MODE (Input Email) */}

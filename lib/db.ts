@@ -59,7 +59,22 @@ export const getDb = () => {
         document_id INT REFERENCES documents(id) ON DELETE CASCADE,
         file_data BYTEA NOT NULL
       );
-    `).catch(err => console.error("Database Setup Error for Documents: ", err));
+
+      CREATE TABLE IF NOT EXISTS crm_customers (
+        id SERIAL PRIMARY KEY,
+        company_name VARCHAR(255) NOT NULL,
+        tax_code VARCHAR(50),
+        representative VARCHAR(150),
+        phone VARCHAR(50),
+        email VARCHAR(100),
+        address TEXT,
+        services_used JSONB DEFAULT '[]'::jsonb,
+        department_id UUID,
+        created_by INT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `).catch(err => console.error("Database Setup Error for Documents/CRM: ", err));
   }
   return dbPool;
 };
